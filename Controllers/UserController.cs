@@ -96,7 +96,7 @@ namespace UserServices.Controllers
         }
         [HttpPost]
         [Route(nameof(Login))]
-        public async Task<ActionResult<string>> Login([FromBody] User userInfo)
+        public async Task<ActionResult<UserToken>> Login([FromBody] User userInfo)
         {
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password,
                  isPersistent: false, lockoutOnFailure: false);
