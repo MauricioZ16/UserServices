@@ -155,6 +155,26 @@ namespace UserServices.Controllers
                 return BadRequest(new { Message = "Desculpe, algo deu errado." });
             }
         }
+        [HttpPut]
+        [Route(nameof(ForgotPassword))]
+        public async Task<ActionResult<string>> ForgotPassword([FromBody] User updatedUser)
+        {
+            try
+            {
+                var user = await _userManager.Users.SingleOrDefaultAsync(user => user.Email == updatedUser.Email);
+                if (user == null)
+                    return NotFound(new { Message = $"Usuário não encontrado." });
+                Random generator = new Random();
+                String newPassword = generator.Next(0, 999999).ToString("D6");
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, newPassword);
+                await _userContext.SaveChangesAsync();
+                return newPassword;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = "Desculpe, algo deu errado." });
+            }
+        }
         [HttpDelete]
         [Route(nameof(Delete))]
         public async Task<IActionResult> Delete([FromQuery] string id)
